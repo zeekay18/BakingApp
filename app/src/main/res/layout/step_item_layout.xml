@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="150dp"
+    android:layout_height="150dp"
+    android:layout_margin="@dimen/vertical_margin">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/step_thumbnail"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            tools:src="@drawable/step_item"/>
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_play_circle_filled_black_48dp"
+            android:layout_gravity="center"/>
+    </FrameLayout>
+    <TextView
+        android:id="@+id/short_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text_secondary"/>
+    <TextView
+        android:id="@+id/desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/textPrimary"/>
+</LinearLayout>

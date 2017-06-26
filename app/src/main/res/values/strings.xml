@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Baking App</string>
+    <string name="recipe_detail_activity_label">RecipeDetailActivity</string>
+    <string name="error_message">Failed to load content</string>
+</resources>

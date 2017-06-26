@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_marginLeft="@dimen/horizontal_margin"
+    android:layout_marginRight="@dimen/horizontal_margin"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="@layout/activity_recipe_list">
+<FrameLayout
+    android:layout_width="0dp"
+    android:layout_weight="1"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="@dimen/horizontal_margin"
+    android:layout_marginRight="@dimen/horizontal_margin">
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recipe_item_recycleview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+    <TextView
+        android:id="@+id/error_message_display"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="@string/error_message"
+        android:textSize="20sp"
+        android:visibility="invisible" />
+    <ProgressBar
+        android:id="@+id/loading_indicator"
+        android:layout_height="42dp"
+        android:layout_width="42dp"
+        android:layout_gravity="center"
+        android:visibility="invisible"/>
+</FrameLayout>
+      <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@android:color/darker_gray"/>
+    <FrameLayout
+        android:id="@+id/recipe_item_detail_container"
+        android:layout_width="0dp"
+        android:layout_weight="2"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>
