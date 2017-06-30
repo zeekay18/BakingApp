@@ -10,13 +10,16 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlaybackException;
+import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
@@ -37,7 +40,7 @@ import com.zeeice.bakingapp.R;
  * Created by Oriaje on 25/06/2017.
  */
 
-public class PlayVideoFragment extends Fragment {
+public class PlayVideoFragment extends Fragment implements ExoPlayer.EventListener{
 
     SimpleExoPlayerView playerView;
     SimpleExoPlayer player;
@@ -52,6 +55,8 @@ public class PlayVideoFragment extends Fragment {
     Boolean playWhenReady;
     private long playbackPosition;
     int currentWindow;
+
+    ProgressBar progressBar;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -96,10 +101,9 @@ public class PlayVideoFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_play_video,container,false);
 
-        Toast.makeText(getContext(),url,Toast.LENGTH_SHORT).show();
-
         playerView = (SimpleExoPlayerView)rootView.findViewById(R.id.video_view);
         stepView = (TextView)rootView.findViewById(R.id.video_steps);
+        progressBar = (ProgressBar)rootView.findViewById(R.id.loading_indicator);
 
         stepView.setText(steps);
 
@@ -121,6 +125,7 @@ public class PlayVideoFragment extends Fragment {
 
             playerView.setPlayer(player);
 
+            player.addListener(this);
             player.setPlayWhenReady(true);
             player.seekTo(currentWindow, playbackPosition);
 
@@ -177,6 +182,49 @@ public class PlayVideoFragment extends Fragment {
             player = null;
         }
     }
+
+    @Override
+    public void onTimelineChanged(Timeline timeline, Object manifest) {
+
+    }
+
+    @Override
+    public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+
+    }
+
+    @Override
+    public void onLoadingChanged(boolean isLoading) {
+
+    //    progressBar.setVisibility(isLoading? View.VISIBLE : View.INVISIBLE);
+    }
+
+    @Override
+    public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+
+        if(playbackState == ExoPlayer.STATE_BUFFERING)
+            progressBar.setVisibility(View.VISIBLE);
+        else
+            progressBar.setVisibility(View.INVISIBLE);
+
+    }
+
+    @Override
+    public void onPlayerError(ExoPlaybackException error) {
+        Toast.makeText(getActivity(),error.getMessage(),Toast.LENGTH_SHORT).show();
+        releasePlayer();
+    }
+
+    @Override
+    public void onPositionDiscontinuity() {
+
+    }
+
+    @Override
+    public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
+
+    }
+
     class MediaSessionCallback extends MediaSessionCompat.Callback {
 
         @Override

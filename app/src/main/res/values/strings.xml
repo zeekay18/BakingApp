@@ -2,4 +2,7 @@
     <string name="app_name">Baking App</string>
     <string name="recipe_detail_activity_label">RecipeDetailActivity</string>
     <string name="error_message">Failed to load content</string>
+    <string name="error_message_btn">faild to get content   tap to refresh!</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>

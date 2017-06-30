@@ -1,6 +1,8 @@
 package com.zeeice.bakingapp.ui.activity;
 
 import android.app.ProgressDialog;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -15,6 +17,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.google.gson.Gson;
@@ -27,6 +30,7 @@ import com.zeeice.bakingapp.ui.Adapter.RecipeRecyclerViewAdapter;
 import com.zeeice.bakingapp.ui.Adapter.StepItemRecyclerViewAdapter;
 import com.zeeice.bakingapp.ui.fragment.PlayVideoFragment;
 import com.zeeice.bakingapp.ui.fragment.RecipeDetailFragment;
+import com.zeeice.bakingapp.widget.BakingAppWidget;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -39,7 +43,7 @@ import butterknife.ButterKnife;
 
 public class RecipeListActivity extends AppCompatActivity
 implements LoaderManager.LoaderCallbacks<List<Recipe>>, RecipeRecyclerViewAdapter.RecipeItemClickHandler,
-        RecipeDetailFragment.PlayVideoHandler{
+        RecipeDetailFragment.PlayVideoHandler, View.OnClickListener {
 
     private boolean mTwoPane;
 
@@ -47,11 +51,15 @@ implements LoaderManager.LoaderCallbacks<List<Recipe>>, RecipeRecyclerViewAdapte
     RecyclerView recyclerView;
     RecipeRecyclerViewAdapter mRecipeAdapter;
 
-    private static final int FORECAST_LOADER_ID = 0;
+    private static final int LOADER_ID = 0;
 
     ProgressBar progressDialog;
 
     List<Recipe> recipeData = null;
+
+    Button error_message_Btn;
+
+    LoaderManager loaderManager;
 
     private static final String RECIPE_LIST = "recipe_list";
 
@@ -71,17 +79,26 @@ implements LoaderManager.LoaderCallbacks<List<Recipe>>, RecipeRecyclerViewAdapte
 
         setUpRecyclerView();
 
+        error_message_Btn = (Button)findViewById(R.id.error_message_Btn);
+        error_message_Btn.setOnClickListener(this);
+
         progressDialog = (ProgressBar)findViewById(R.id.loading_indicator);
 
-        int loaderId = FORECAST_LOADER_ID;
+        int loaderId = LOADER_ID;
+
+        loaderManager = getSupportLoaderManager();
 
         if(savedInstanceState != null)
         {
             recipeData = savedInstanceState.getParcelableArrayList(RECIPE_LIST);
+
+            if(recipeData != null)
             mRecipeAdapter.setRecipes(recipeData);
+            else
+                loaderManager.initLoader(loaderId,null,this);
         }
         else
-        getSupportLoaderManager().initLoader(loaderId,null,this);
+        loaderManager.initLoader(loaderId,null,this);
     }
 
     @Override
@@ -92,6 +109,12 @@ implements LoaderManager.LoaderCallbacks<List<Recipe>>, RecipeRecyclerViewAdapte
 
     @Override
     public void onClick(Recipe recipe) {
+
+        //update the widget
+
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, BakingAppWidget.class));
+        BakingAppWidget.updateRecipeData(this,appWidgetManager,recipe,appWidgetIds);
 
         if(mTwoPane)
         {
@@ -162,8 +185,16 @@ implements LoaderManager.LoaderCallbacks<List<Recipe>>, RecipeRecyclerViewAdapte
 
     @Override
     public void onLoadFinished(Loader<List<Recipe>> loader, List<Recipe> data) {
-        mRecipeAdapter.setRecipes(data);
         progressDialog.setVisibility(View.INVISIBLE);
+
+        if(data == null ) {
+            showErrorMessage(true);
+            showRecyclerView(false);
+        }else {
+            showRecyclerView(true);
+            showErrorMessage(false);
+        }
+        mRecipeAdapter.setRecipes(data);
     }
 
     @Override
@@ -175,7 +206,15 @@ implements LoaderManager.LoaderCallbacks<List<Recipe>>, RecipeRecyclerViewAdapte
         mRecipeAdapter.setRecipes(null);
     }
 
+    private void showErrorMessage(Boolean show)
+    {
+        error_message_Btn.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
+    }
 
+    private void showRecyclerView(Boolean show)
+    {
+        recyclerView.setVisibility(show? View.VISIBLE : View.INVISIBLE);
+    }
     @Override
     public void stepItemClick(String url, String step) {
        if(!mTwoPane)
@@ -192,5 +231,12 @@ implements LoaderManager.LoaderCallbacks<List<Recipe>>, RecipeRecyclerViewAdapte
                 .replace(R.id.recipe_item_detail_container, fragment)
                 .addToBackStack(fragment.getClass().getName())
                 .commit();
+    }
+
+    @Override
+    public void onClick(View v) {
+        showErrorMessage(false);
+        showRecyclerView(false);
+        loaderManager.restartLoader(LOADER_ID,null,this);
     }
 }
