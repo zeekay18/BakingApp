@@ -55,6 +55,8 @@ public class StepItemRecyclerViewAdapter extends RecyclerView.Adapter<StepItemRe
 
         Picasso.with(mContext)
                 .load(R.drawable.step_item)
+                .placeholder(R.drawable.step_item)
+                .error(R.drawable.step_item)
                 .into(holder.thumb_imageView);
     }
 

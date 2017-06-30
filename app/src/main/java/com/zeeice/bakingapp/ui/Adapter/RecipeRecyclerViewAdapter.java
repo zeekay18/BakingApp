@@ -55,6 +55,7 @@ public class RecipeRecyclerViewAdapter extends RecyclerView.Adapter<RecipeRecycl
         //Use mock image
         Picasso.with(mContext)
                 .load(recipe.getImageUrl())
+                .placeholder(R.drawable.recipe_item)
                 .error(R.drawable.recipe_item)
                 .into(holder.recipeImage);
     }
