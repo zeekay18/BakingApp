@@ -22,6 +22,10 @@ import com.zeeice.bakingapp.ui.Adapter.StepItemRecyclerViewAdapter;
 
 import java.io.InvalidClassException;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 /**
  * Created by Oriaje on 05/06/2017.
  */
@@ -32,8 +36,13 @@ public class RecipeDetailFragment extends Fragment
 
     public static final String RECIPE_ITEM = "recipe_item";
 
+    @BindView(R.id.instructionView)
     TextView instructionView;
+
+    @BindView(R.id.steps_recyclerview)
     RecyclerView stepsRecyclerView;
+
+    Unbinder unbinder;
 
     StepItemRecyclerViewAdapter adapter;
 
@@ -76,15 +85,23 @@ public class RecipeDetailFragment extends Fragment
 
         View rootView = inflater.inflate(R.layout.fragemnt_recipe_detail,container,false);
 
-        instructionView = (TextView)rootView.findViewById(R.id.instructionView);
-        stepsRecyclerView = (RecyclerView)rootView.findViewById(R.id.steps_recyclerview);
+      //  instructionView = (TextView)rootView.findViewById(R.id.instructionView);
+       // stepsRecyclerView = (RecyclerView)rootView.findViewById(R.id.steps_recyclerview);
 
+        unbinder = ButterKnife.bind(this,rootView);
         setUpRecyclerView();
 
         setInstructionView();
         adapter.swapData(recipe.getSteps());
 
         return rootView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        unbinder.unbind();
     }
 
     private void setInstructionView()

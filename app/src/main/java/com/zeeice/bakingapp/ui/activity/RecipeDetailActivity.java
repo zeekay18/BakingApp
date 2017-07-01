@@ -49,7 +49,6 @@ public class RecipeDetailActivity extends AppCompatActivity
 
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.recipe_item_detail_container, recipeDetailFragment)
-                    .addToBackStack(recipeDetailFragment.getClass().getName())
                     .commit();
 
         }

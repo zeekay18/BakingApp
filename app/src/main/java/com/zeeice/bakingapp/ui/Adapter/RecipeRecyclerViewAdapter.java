@@ -14,6 +14,9 @@ import com.zeeice.bakingapp.R;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by Oriaje on 05/06/2017.
  */
@@ -52,9 +55,9 @@ public class RecipeRecyclerViewAdapter extends RecyclerView.Adapter<RecipeRecycl
         holder.recipeName.setText(recipe.getName());
         holder.servings.setText(recipe.getServings());
 
-        //Use mock image
         Picasso.with(mContext)
-                .load(recipe.getImageUrl())
+             //   .load(recipe.getImageUrl()) empty string returned from the url link
+                .load(R.drawable.recipe_item)
                 .placeholder(R.drawable.recipe_item)
                 .error(R.drawable.recipe_item)
                 .into(holder.recipeImage);
@@ -77,16 +80,19 @@ public class RecipeRecyclerViewAdapter extends RecyclerView.Adapter<RecipeRecycl
     }
     class RecipeViewHolder extends RecyclerView.ViewHolder {
 
+        @BindView(R.id.recipeImage)
         public ImageView recipeImage;
+
+        @BindView(R.id.recipeName)
         public TextView recipeName;
+
+        @BindView(R.id.recipeServings)
         public TextView servings;
 
         public RecipeViewHolder(View itemView) {
             super(itemView);
 
-            recipeImage =(ImageView) itemView.findViewById(R.id.recipeImage);
-            recipeName = (TextView)itemView.findViewById(R.id.recipeName);
-            servings = (TextView)itemView.findViewById(R.id.recipeServings);
+              ButterKnife.bind(this,itemView);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -17,13 +17,13 @@ public class Recipe implements Parcelable {
     private List<IngredientItem> ingredients;
     private List<StepObject> steps;
     private String servings;
-    private String imageUrl;
+    private String image;
 
     public Recipe(Parcel in) {
 
         this.id = in.readInt();
         this.name = in.readString();
-        this.imageUrl = in.readString();
+        this.image = in.readString();
         this.servings = in.readString();
         this.ingredients = new ArrayList<>();
         in.readList(ingredients,IngredientItem.class.getClassLoader());
@@ -54,7 +54,7 @@ public class Recipe implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
         dest.writeString(name);
-        dest.writeString(imageUrl);
+        dest.writeString(image);
         dest.writeString(servings);
         dest.writeList(ingredients);
         dest.writeList(steps);
@@ -101,11 +101,11 @@ public class Recipe implements Parcelable {
     }
 
     public String getImageUrl() {
-        return imageUrl;
+        return image;
     }
 
     public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+        this.image = imageUrl;
     }
 
 

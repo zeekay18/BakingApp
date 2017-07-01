@@ -14,6 +14,9 @@ import com.zeeice.bakingapp.R;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by Oriaje on 24/06/2017.
  */
@@ -54,6 +57,7 @@ public class StepItemRecyclerViewAdapter extends RecyclerView.Adapter<StepItemRe
         holder.desc_TextView.setText(step.getDescription());
 
         Picasso.with(mContext)
+//                .load(step.getThumbnailURL()) empty string return from the URL
                 .load(R.drawable.step_item)
                 .placeholder(R.drawable.step_item)
                 .error(R.drawable.step_item)
@@ -77,16 +81,14 @@ public class StepItemRecyclerViewAdapter extends RecyclerView.Adapter<StepItemRe
 
     class StepItemViewHolder extends RecyclerView.ViewHolder {
 
-        public ImageView thumb_imageView;
-        public TextView short_desc_TextView;
-        public TextView desc_TextView;
+        @BindView(R.id.step_thumbnail)public ImageView thumb_imageView;
+        @BindView(R.id.short_desc)public TextView short_desc_TextView;
+        @BindView(R.id.desc)public TextView desc_TextView;
 
         public StepItemViewHolder(View itemView) {
             super(itemView);
 
-            thumb_imageView = (ImageView)itemView.findViewById(R.id.step_thumbnail);
-            short_desc_TextView = (TextView)itemView.findViewById(R.id.short_desc);
-            desc_TextView = (TextView)itemView.findViewById(R.id.desc);
+            ButterKnife.bind(this,itemView);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

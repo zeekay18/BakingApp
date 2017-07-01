@@ -35,6 +35,10 @@ import com.google.android.exoplayer2.util.ParsableNalUnitBitArray;
 import com.google.android.exoplayer2.util.Util;
 import com.zeeice.bakingapp.R;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 
 /**
  * Created by Oriaje on 25/06/2017.
@@ -42,9 +46,12 @@ import com.zeeice.bakingapp.R;
 
 public class PlayVideoFragment extends Fragment implements ExoPlayer.EventListener{
 
+    @BindView(R.id.video_view)
     SimpleExoPlayerView playerView;
+
     SimpleExoPlayer player;
 
+    @BindView(R.id.video_steps)
     TextView stepView;
 
     public static final String VIDEO_URL = "video_url";
@@ -56,7 +63,10 @@ public class PlayVideoFragment extends Fragment implements ExoPlayer.EventListen
     private long playbackPosition;
     int currentWindow;
 
+    @BindView(R.id.loading_indicator)
     ProgressBar progressBar;
+
+    private Unbinder unbinder;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -101,15 +111,24 @@ public class PlayVideoFragment extends Fragment implements ExoPlayer.EventListen
 
         View rootView = inflater.inflate(R.layout.fragment_play_video,container,false);
 
-        playerView = (SimpleExoPlayerView)rootView.findViewById(R.id.video_view);
-        stepView = (TextView)rootView.findViewById(R.id.video_steps);
-        progressBar = (ProgressBar)rootView.findViewById(R.id.loading_indicator);
+       // playerView = (SimpleExoPlayerView)rootView.findViewById(R.id.video_view);
+        //stepView = (TextView)rootView.findViewById(R.id.video_steps);
+        //progressBar = (ProgressBar)rootView.findViewById(R.id.loading_indicator);
+
+        unbinder = ButterKnife.bind(this,rootView);
 
         stepView.setText(steps);
 
   //      initializeMediaSession();
         initializePlayer();
         return rootView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        unbinder.unbind();
     }
 
     private void initializePlayer() {
@@ -223,24 +242,6 @@ public class PlayVideoFragment extends Fragment implements ExoPlayer.EventListen
     @Override
     public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
 
-    }
-
-    class MediaSessionCallback extends MediaSessionCompat.Callback {
-
-        @Override
-        public void onPlay() {
-            player.setPlayWhenReady(true);
-        }
-
-        @Override
-        public void onPause() {
-            //player.setPlayWhenReady(true);
-        }
-
-        @Override
-        public void onSkipToPrevious() {
-            //restExoPlayer(0, false);
-        }
     }
 
 }
