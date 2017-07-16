@@ -1,18 +1,14 @@
 package com.zeeice.bakingapp.ui.activity;
 
-import android.app.ProgressDialog;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.os.Parcelable;
+import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -23,20 +19,17 @@ import android.widget.ProgressBar;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.zeeice.bakingapp.Data.Model.Recipe;
-import com.zeeice.bakingapp.Data.Model.StepObject;
 import com.zeeice.bakingapp.R;
 import com.zeeice.bakingapp.Utilities.NetworkUtil;
 import com.zeeice.bakingapp.ui.Adapter.RecipeRecyclerViewAdapter;
-import com.zeeice.bakingapp.ui.Adapter.StepItemRecyclerViewAdapter;
 import com.zeeice.bakingapp.ui.fragment.PlayVideoFragment;
 import com.zeeice.bakingapp.ui.fragment.RecipeDetailFragment;
-import com.zeeice.bakingapp.widget.BakingAppWidget;
+import com.zeeice.bakingapp.widget.BakingAppWidgetProvider;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.LinkedBlockingDeque;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -104,8 +97,10 @@ implements LoaderManager.LoaderCallbacks<List<Recipe>>, RecipeRecyclerViewAdapte
         //update the widget
 
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
-        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, BakingAppWidget.class));
-        BakingAppWidget.updateRecipeData(this,appWidgetManager,recipe,appWidgetIds);
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, BakingAppWidgetProvider.class));
+
+       BakingAppWidgetProvider.updateRecipeData(this,appWidgetManager
+       ,recipe,appWidgetIds);
 
         if(mTwoPane)
         {
@@ -125,6 +120,7 @@ implements LoaderManager.LoaderCallbacks<List<Recipe>>, RecipeRecyclerViewAdapte
             startActivity(intent);
         }
     }
+
     private void setUpRecyclerView()
     {
         recyclerView = (RecyclerView)findViewById(R.id.recipe_item_recycleview);

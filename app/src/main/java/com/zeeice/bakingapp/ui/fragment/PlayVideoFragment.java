@@ -1,12 +1,12 @@
 package com.zeeice.bakingapp.ui.fragment;
 
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.media.session.MediaSessionCompat;
-import android.support.v4.media.session.PlaybackStateCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,8 +30,6 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
-import com.google.android.exoplayer2.util.ParsableNalUnitBitArray;
 import com.google.android.exoplayer2.util.Util;
 import com.zeeice.bakingapp.R;
 
@@ -54,13 +52,23 @@ public class PlayVideoFragment extends Fragment implements ExoPlayer.EventListen
     @BindView(R.id.video_steps)
     TextView stepView;
 
+    @BindView(R.id.stepsLabel)
+    TextView stepsLabel;
+
+    @BindView(R.id.playViewContainer)
+    View playViewContainer;
+
+    @BindView(R.id.fragmentContainer)
+    View fragmentContainer;
+
     public static final String VIDEO_URL = "video_url";
     public static final String VIDEO_STEPS = "video_steps";
+    public static final String PLAYBACK_POSITION = "playbaak_position";
 
     String url;
     String steps;
     Boolean playWhenReady;
-    private long playbackPosition;
+    private static long playbackPosition;
     int currentWindow;
 
     @BindView(R.id.loading_indicator)
@@ -77,33 +85,26 @@ public class PlayVideoFragment extends Fragment implements ExoPlayer.EventListen
             url = getArguments().getString(VIDEO_URL);
             steps = getArguments().getString(VIDEO_STEPS);
         }
+
     }
 
-//    private void hideSystemUI() {
-//        getActivity().getWindow().getDecorView().setSystemUiVisibility(
-//                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-//                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-//                        | View.SYSTEM_UI_FLAG_FULLSCREEN
-//                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-//                        | View.SYSTEM_UI_FLAG_FULLSCREEN
-//                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-//    }
-//    private void initializeMediaSession() {
-//        mediaSession = new MediaSessionCompat(getContext(), "sdsfsfds");
-//        mediaSession.setFlags(
-//                MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
-//                        MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
-//        mediaSession.setMediaButtonReceiver(null);
-//        stateBuilder = new PlaybackStateCompat.Builder()
-//                .setActions(
-//                        PlaybackStateCompat.ACTION_PLAY |
-//                                PlaybackStateCompat.ACTION_PAUSE |
-//                                PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS |
-//                                PlaybackStateCompat.ACTION_PLAY_PAUSE);
-//        mediaSession.setPlaybackState(stateBuilder.build());
-//        mediaSession.setCallback(new MediaSessionCallback());
-//        mediaSession.setActive(true);
-//    }
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+
+        outState.putLong(PLAYBACK_POSITION,playbackPosition);
+
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+
+        if(savedInstanceState != null && savedInstanceState.containsKey(PLAYBACK_POSITION))
+        {
+            playbackPosition = savedInstanceState.getLong(PLAYBACK_POSITION);
+        }
+        super.onViewStateRestored(savedInstanceState);
+    }
 
     @Nullable
     @Override
@@ -111,16 +112,29 @@ public class PlayVideoFragment extends Fragment implements ExoPlayer.EventListen
 
         View rootView = inflater.inflate(R.layout.fragment_play_video,container,false);
 
-       // playerView = (SimpleExoPlayerView)rootView.findViewById(R.id.video_view);
-        //stepView = (TextView)rootView.findViewById(R.id.video_steps);
-        //progressBar = (ProgressBar)rootView.findViewById(R.id.loading_indicator);
 
         unbinder = ButterKnife.bind(this,rootView);
 
         stepView.setText(steps);
 
-  //      initializeMediaSession();
         initializePlayer();
+
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+        {
+            hideSystemUI();
+
+            playViewContainer.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
+            stepView.setVisibility(View.GONE);
+            stepsLabel.setVisibility(View.GONE);
+
+            ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+
+            if(actionBar != null)
+            {
+              actionBar.hide();
+           }
+        }
+
         return rootView;
     }
 
@@ -131,17 +145,22 @@ public class PlayVideoFragment extends Fragment implements ExoPlayer.EventListen
         unbinder.unbind();
     }
 
+    private void hideSystemUI() {
+        getActivity().getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+    }
+
     private void initializePlayer() {
 
         if (player == null) {
             player = ExoPlayerFactory.newSimpleInstance(
                     new DefaultRenderersFactory(getActivity()),
                     new DefaultTrackSelector(), new DefaultLoadControl());
-
-//            player = ExoPlayerFactory.newSimpleInstance(
-//                    getActivity(),new DefaultTrackSelector(),new DefaultLoadControl()
-//            );
-
             playerView.setPlayer(player);
 
             player.addListener(this);

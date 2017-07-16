@@ -27,7 +27,7 @@
                 android:value="com.zeeice.bakingapp.ui.activity.RecipeDetailActivity" />
         </activity>
 
-        <receiver android:name=".widget.BakingAppWidget">
+        <receiver android:name=".widget.BakingAppWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -37,7 +37,7 @@
                 android:resource="@xml/baking_app_widget_info" />
         </receiver>
         <service android:name=".widget.RecipeWidgetListService"
-            android:permission="android.permission.BIND_REMOTE_VIEWS"/>
-    </application>
+            android:permission="android.permission.BIND_REMOTEVIEWS"/>
+        </application>
 
 </manifest>

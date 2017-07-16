@@ -2,25 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/horizontal_margin"
-        android:layout_marginRight="@dimen/horizontal_margin"
-        android:paddingBottom="@dimen/vertical_pad"
-        android:layout_weight="1">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/ingredient_text"
-            android:paddingTop="@dimen/vertical_pad"
-            android:text="Nutella or other chocolate-hazelnut spread"
-            android:gravity="center_horizontal"/>
-
-    </LinearLayout>
+    android:layout_height="wrap_content"
+    android:id="@+id/widget_list_item">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -46,7 +29,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/measure_text"
                     android:text="MEASURE"
-                    android:textColor="@color/colorPrimary"
+                    android:textColor="@color/textPrimary"
                     android:gravity="center_horizontal"/>
 
                 <TextView
@@ -76,7 +59,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/quantity_text"
                     android:text="QUANTITY"
-                    android:textColor="@color/colorPrimary"
+                    android:textColor="@color/textPrimary"
                     android:gravity="center_horizontal"/>
 
                 <TextView

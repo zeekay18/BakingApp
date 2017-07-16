@@ -56,12 +56,17 @@ public class StepItemRecyclerViewAdapter extends RecyclerView.Adapter<StepItemRe
         holder.short_desc_TextView.setText(step.getShortDescription());
         holder.desc_TextView.setText(step.getDescription());
 
-        Picasso.with(mContext)
-//                .load(step.getThumbnailURL()) empty string return from the URL
-                .load(R.drawable.step_item)
-                .placeholder(R.drawable.step_item)
-                .error(R.drawable.step_item)
-                .into(holder.thumb_imageView);
+        if(step.getThumbnailURL().isEmpty())
+        {
+            Picasso.with(mContext)
+                    .load(R.drawable.step_item)
+                    .into(holder.thumb_imageView);
+        }else{
+            Picasso.with(mContext)
+                    .load(step.getThumbnailURL())
+                    .into(holder.thumb_imageView);
+        }
+
     }
 
     @Override

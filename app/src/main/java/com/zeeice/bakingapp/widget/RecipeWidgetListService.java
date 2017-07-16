@@ -10,6 +10,6 @@ import android.widget.RemoteViewsService;
 public class RecipeWidgetListService extends RemoteViewsService {
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
-        return new RecipeListFactory();
+        return new RecipeListFactory(getApplicationContext(),intent);
     }
 }

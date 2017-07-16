@@ -55,12 +55,16 @@ public class RecipeRecyclerViewAdapter extends RecyclerView.Adapter<RecipeRecycl
         holder.recipeName.setText(recipe.getName());
         holder.servings.setText(recipe.getServings());
 
-        Picasso.with(mContext)
-             //   .load(recipe.getImageUrl()) empty string returned from the url link
-                .load(R.drawable.recipe_item)
-                .placeholder(R.drawable.recipe_item)
-                .error(R.drawable.recipe_item)
-                .into(holder.recipeImage);
+        if(recipe.getImageUrl().isEmpty()){
+            Picasso.with(mContext)
+                    .load( R.drawable.recipe_item)
+                    .into(holder.recipeImage);
+        }else{
+            Picasso.with(mContext)
+                    .load( recipe.getImageUrl())
+                    .into(holder.recipeImage);
+        }
+
     }
 
     @Override
